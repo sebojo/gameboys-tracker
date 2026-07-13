@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gameboys — Wedding Transformation</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.8.6/jsrsasign-all-min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #0a0a0c;
+  --surface: #111114;
+  --surface2: #18181d;
+  --surface3: #1e1e25;
+  --border: #2a2a35;
+  --border2: #38384a;
+  --gold: #c9a84c;
+  --gold2: #e8c97a;
+  --gold-dim: rgba(201,168,76,0.15);
+  --rose: #e8a0a0;
+  --rose-dim: rgba(232,160,160,0.15);
+  --text: #f0efe8;
+  --text2: #a8a79f;
+  --muted: #5a5a6a;
+  --sebi: #c9a84c;
+  --clemens: #7eb8f7;
+  --kopi: #f0a0c8;
+  --loisi: #a0d4b0;
+  --michi: #b0a0f0;
+  --adea: #f0c0a0;
+  --danger: #f07070;
+  --success: #70c090;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND ── */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(201,168,76,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 90%, rgba(232,160,160,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, #0a0a0c 0%, #060608 100%);
+  pointer-events: none;
+}
+
+.bg-texture {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(201,168,76,0.015) 60px, rgba(201,168,76,0.015) 61px),
+    repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(201,168,76,0.015) 60px, rgba(201,168,76,0.015) 61px);
+  pointer-events: none;
+}
+
+/* ── LOGIN ── */
+#login-screen {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0;
+  padding: 2rem;
+}
+
+.login-ornament {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+.login-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  opacity: 0.8;
+}
+
+.login-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 300;
+  text-align: center;
+  line-height: 1.05;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.login-title em {
+  font-style: italic;
+  color: var(--gold2);
+}
+
+.login-subtitle {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 2rem;
+}
+.login-divider::before, .login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border2));
+}
+.login-divider::after { background: linear-gradient(to left, transparent, var(--border2)); }
+.login-divider span { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; white-space: nowrap; }
+
+.login-card {
+  background: rgba(17,17,20,0.9);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.08);
+}
+
+.login-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text2);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.user-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.user-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  color: var(--text2);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.user-btn:hover { border-color: var(--gold); color: var(--text); background: var(--surface3); }
+.user-btn.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold2); }
+
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+.dot-sebi { background: var(--sebi); }
+.dot-clemens { background: var(--clemens); }
+.dot-kopi { background: var(--kopi); }
+.dot-loisi { background: var(--loisi); }
+.dot-michi { background: var(--michi); }
+.dot-adea { background: var(--adea); }
+.dot-guest { background: var(--muted); }
+
+.pw-wrap { position: relative; }
+.pw-field {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+  letter-spacing: 0.05em;
+}
+.pw-field:focus { border-color: var(--gold); }
+.pw-field::placeholder { color: var(--muted); letter-spacing: 0; }
+
+.login-btn {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
+  color: #0a0a0c;
+  border: none;
+  border-radius: 10px;
+  padding: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.login-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.login-btn:active { transform: translateY(0); }
+
+.error-msg { color: var(--danger); font-size: 0.8rem; text-align: center; display: none; }
+
+/* ── APP SHELL ── */
+#app { display: none; position: relative; z-index: 10; }
+
+.topbar {
+  background: rgba(10,10,12,0.95);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+}
+
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.topbar-logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--gold2);
+  letter-spacing: 0.05em;
+}
+
+.topbar-logo-sub {
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-family: 'Space Mono', monospace;
+}
+
+.topbar-right { display: flex; align-items: center; gap: 1rem; }
+
+.current-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: 0.05em;
+}
+
+.logout-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.05em;
+}
+.logout-btn:hover { border-color: var(--border2); color: var(--text2); }
+
+/* ── TABS ── */
+.tabs {
+  background: rgba(10,10,12,0.9);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  padding: 0 1.5rem;
+  overflow-x: auto;
+  backdrop-filter: blur(10px);
+}
+
+.tab {
+  padding: 0.9rem 1.25rem;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tab:hover { color: var(--text2); }
+.tab.active { color: var(--gold2); border-bottom-color: var(--gold); }
+
+/* ── COUNTDOWN ── */
+.countdown-banner {
+  background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(232,160,160,0.05) 100%);
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.countdown-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.9rem;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.countdown-units {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.countdown-unit {
+  text-align: center;
+}
+
+.countdown-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--gold2);
+  line-height: 1;
+  display: block;
+}
+
+.countdown-unit-label {
+  font-size: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}
+
+.countdown-sep {
+  font-size: 1.5rem;
+  color: var(--gold);
+  opacity: 0.3;
+  margin-bottom: 1rem;
+}
+
+.countdown-ring {
+  font-size: 1rem;
+  opacity: 0.5;
+}
+
+/* ── MAIN ── */
+.main { padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.section-title-ornament {
+  color: var(--gold);
+  opacity: 0.5;
+  font-size: 1rem;
+}
+
+/* ── ATHLETE CARDS ── */
+.athlete-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.athlete-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.athlete-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+.athlete-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--user-color), transparent);
+}
+
+.athlete-card::after {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--user-color) 0%, transparent 70%);
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+.athlete-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+
+.stat-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  transition: border-color 0.15s;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.3rem;
+  font-family: 'Space Mono', monospace;
+}
+
+.stat-value {
+  font-family: 'Space Mono', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--user-color);
+}
+
+/* ── CHARTS ── */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: border-color 0.2s;
+}
+.chart-card:hover { border-color: var(--border2); }
+
+.chart-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+  font-family: 'Space Mono', monospace;
+}
+
+.chart-title span { color: var(--gold); margin-right: 0.5rem; }
+
+.chart-wrap { position: relative; height: 220px; }
+
+/* ── FORM ── */
+.entry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.user-switcher { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+.user-pill {
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.05em;
+}
+
+.user-pill:hover { border-color: var(--border2); color: var(--text2); }
+
+.form-section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin: 1.5rem 0 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.form-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-family: 'Space Mono', monospace;
+}
+
+.form-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  width: 100%;
+}
+.form-input:focus { border-color: var(--gold); background: var(--surface3); }
+.form-input::placeholder { color: var(--muted); font-size: 0.85rem; }
+
+.form-comment { grid-column: 1 / -1; }
+
+.save-btn {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
+  color: #0a0a0c;
+  border: none;
+  border-radius: 10px;
+  padding: 0.9rem 2rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.save-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.save-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+/* ── TABLE ── */
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: auto;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+
+thead th {
+  background: var(--surface2);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  white-space: nowrap;
+  font-family: 'Space Mono', monospace;
+}
+
+tbody tr { border-top: 1px solid var(--border); transition: background 0.1s; }
+tbody tr:hover { background: var(--surface2); }
+tbody td {
+  padding: 0.75rem 1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  color: var(--text2);
+}
+.td-date { color: var(--text); font-weight: 700; }
+.td-comment { font-family: 'Inter', sans-serif; font-size: 0.82rem; color: var(--muted); max-width: 180px; white-space: normal; }
+
+/* ── PHOTOS ── */
+.photo-user-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+
+.upload-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.upload-card-title {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  margin-bottom: 1.25rem;
+  font-family: 'Space Mono', monospace;
+}
+
+.photo-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.photo-slot-label-text {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  font-family: 'Space Mono', monospace;
+}
+
+.photo-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background: var(--surface2);
+  border: 1px dashed var(--border2);
+  border-radius: 12px;
+  aspect-ratio: 3/4;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  overflow: hidden;
+  position: relative;
+}
+.photo-slot:hover { border-color: var(--gold); background: var(--surface3); }
+.photo-slot.has-photo { border-color: var(--gold); border-style: solid; }
+
+.photo-slot img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.photo-slot-icon { font-size: 1.5rem; opacity: 0.4; }
+.photo-slot-hint { font-size: 0.7rem; color: var(--muted); }
+
+.photo-groups { display: flex; flex-direction: column; gap: 2.5rem; }
+
+.photo-group-header {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  letter-spacing: 0.03em;
+}
+
+.photo-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.photo-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  position: relative;
+}
+.photo-item img { width: 100%; height: 100%; object-fit: cover; }
+
+.photo-label {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+  padding: 1.5rem 0.75rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Space Mono', monospace;
+}
+
+.photo-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-family: 'Space Mono', monospace;
+}
+
+/* ── MISC ── */
+.loading-overlay {
+  position: fixed; inset: 0;
+  background: rgba(10,10,12,0.85);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999; display: none;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 36px; height: 36px;
+  border: 2px solid var(--border2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-text {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-family: 'Space Mono', monospace;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+}
+
+.toast {
+  position: fixed;
+  bottom: 1.5rem; right: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 0.9rem 1.25rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  z-index: 9999;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 300px;
+  backdrop-filter: blur(20px);
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-color: var(--gold); color: var(--gold2); }
+.toast.error { border-color: var(--danger); color: var(--danger); }
+
+.guest-banner {
+  background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(232,160,160,0.05));
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--gold);
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .chart-grid { grid-template-columns: 1fr; }
+  .tab { padding: 0.875rem 0.75rem; font-size: 0.7rem; }
+  .login-title { font-size: 2.5rem; }
+  .countdown-units { gap: 1rem; }
+  .countdown-num { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="bg-texture"></div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-ornament">💍</div>
+  <div class="login-eyebrow">The Wedding Countdown</div>
+  <h1 class="login-title">Gameboys<br><em>Transformation</em></h1>
+  <div class="login-subtitle">10. Juni 2028 &nbsp;·&nbsp; Wien</div>
+
+  <div class="login-divider"><span>Einloggen</span></div>
+
+  <div class="login-card">
+    <div class="login-card-title">Wer bist du?</div>
+    <div class="user-btns" id="login-user-btns"></div>
+    <input class="pw-field" type="password" id="pw-input" placeholder="Passwort" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Einloggen ✦</button>
+    <div class="error-msg" id="login-error">Falsches Passwort oder kein User gewählt.</div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text">Laden...</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div>
+        <div class="topbar-logo-text">Gameboys ✦</div>
+        <div class="topbar-logo-sub">Wedding Transformation</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="current-user-badge">
+        <span class="dot" id="topbar-dot"></span>
+        <span id="topbar-name"></span>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- COUNTDOWN BANNER -->
+  <div class="countdown-banner">
+    <div class="countdown-label">💍 Bis zur Hochzeit</div>
+    <div class="countdown-units">
+      <div class="countdown-unit">
+        <span class="countdown-num" id="cd-days">—</span>
+        <div class="countdown-unit-label">Tage</div>
+      </div>
+      <div class="countdown-sep">·</div>
+      <div class="countdown-unit">
+        <span class="countdown-num" id="cd-hours">—</span>
+        <div class="countdown-unit-label">Stunden</div>
+      </div>
+      <div class="countdown-sep">·</div>
+      <div class="countdown-unit">
+        <span class="countdown-num" id="cd-mins">—</span>
+        <div class="countdown-unit-label">Minuten</div>
+      </div>
+      <div class="countdown-sep">·</div>
+      <div class="countdown-unit">
+        <span class="countdown-num" id="cd-secs">—</span>
+        <div class="countdown-unit-label">Sekunden</div>
+      </div>
+    </div>
+    <div class="countdown-ring">💪🏋️</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('overview',this)">Übersicht</button>
+    <button class="tab" onclick="switchTab('entry',this)" id="tab-entry">Eintragen</button>
+    <button class="tab" onclick="switchTab('data',this)">Daten</button>
+    <button class="tab" onclick="switchTab('photos',this)">Fotos</button>
+  </div>
+
+  <div class="main">
+    <!-- GUEST BANNER -->
+    <div class="guest-banner" id="guest-banner">
+      👀 Du schaust als Gast zu — viel Spaß beim Zuschauen!
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="page active" id="page-overview">
+      <div class="section-header">
+        <div class="section-title">Übersicht</div>
+        <div class="section-title-ornament">✦</div>
+      </div>
+      <div class="athlete-grid" id="athlete-cards"></div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title"><span>⚖</span> Gewicht</div><div class="chart-wrap"><canvas id="chart-weight"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title"><span>🏋</span> Deadlift</div><div class="chart-wrap"><canvas id="chart-deadlift"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title"><span>💪</span> Barbell Incline Bench</div><div class="chart-wrap"><canvas id="chart-bench"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title"><span>🦵</span> Leg Extension</div><div class="chart-wrap"><canvas id="chart-legext"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title"><span>💥</span> Triceps Pushdown</div><div class="chart-wrap"><canvas id="chart-triceps"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title"><span>📊</span> Relative Kraft (Lift / Körpergewicht)</div><div class="chart-wrap"><canvas id="chart-relstrength"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- ENTRY -->
+    <div class="page" id="page-entry">
+      <div class="entry-header">
+        <div class="section-title">Neuer Eintrag</div>
+        <div class="user-switcher" id="entry-user-switcher"></div>
+      </div>
+      <div class="form-section-title">📅 Basics</div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Datum</label><input class="form-input" type="date" id="f-date"></div>
+        <div class="form-group"><label class="form-label">Gewicht / kg</label><input class="form-input" type="number" step="0.1" id="f-weight" placeholder="89.5"></div>
+        <div class="form-group"><label class="form-label">Kalorien / kcal</label><input class="form-input" type="number" id="f-kcal" placeholder="2200"></div>
+        <div class="form-group"><label class="form-label">Protein / g</label><input class="form-input" type="number" id="f-protein" placeholder="170"></div>
+      </div>
+      <div class="form-section-title">🏋️ Lifts</div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Barbell Incline Bench / kg</label><input class="form-input" type="number" step="0.5" id="f-bench" placeholder="75"></div>
+        <div class="form-group"><label class="form-label">Deadlift / kg</label><input class="form-input" type="number" step="0.5" id="f-deadlift" placeholder="140"></div>
+        <div class="form-group"><label class="form-label">Machine Preacher Curl / kg</label><input class="form-input" type="number" step="0.5" id="f-curl" placeholder="30"></div>
+        <div class="form-group"><label class="form-label">Hacksquat / kg</label><input class="form-input" type="number" step="0.5" id="f-hacksquat" placeholder="55"></div>
+        <div class="form-group"><label class="form-label">Leg Extension / kg</label><input class="form-input" type="number" step="0.5" id="f-legext" placeholder="40"></div>
+        <div class="form-group"><label class="form-label">Triceps Pushdown / kg</label><input class="form-input" type="number" step="0.5" id="f-triceps" placeholder="25"></div>
+      </div>
+      <div class="form-grid" style="margin-bottom:1.5rem">
+        <div class="form-group form-comment"><label class="form-label">Kommentar</label><input class="form-input" type="text" id="f-comment" placeholder="z.B. Fitinn Neubau, Arm aua..."></div>
+      </div>
+      <button class="save-btn" id="save-btn" onclick="saveEntry()">Eintrag speichern ✦</button>
+    </div>
+
+    <!-- DATA TABLE -->
+    <div class="page" id="page-data">
+      <div class="table-header">
+        <div class="section-title">Alle Einträge</div>
+        <div class="user-switcher" id="data-user-switcher"></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Datum</th><th>Gewicht</th><th>kcal</th><th>Protein</th>
+            <th>Bench</th><th>Rel.</th><th>Deadlift</th><th>Rel.</th>
+            <th>Curl</th><th>Hacksquat</th><th>Leg Ext.</th><th>Triceps</th><th>Kommentar</th>
+          </tr></thead>
+          <tbody id="data-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PHOTOS -->
+    <div class="page" id="page-photos">
+      <div class="section-header">
+        <div class="section-title">Progress Fotos</div>
+        <div class="section-title-ornament">📸</div>
+      </div>
+      <div class="photo-user-tabs" id="photo-user-tabs"></div>
+
+      <div class="upload-card" id="upload-card">
+        <div class="upload-card-title">✦ Neue Fotos hochladen</div>
+        <div class="photo-upload-grid">
+          <div>
+            <div class="photo-slot-label-text">Front</div>
+            <label id="label-front" class="photo-slot" onclick="">
+              <span class="photo-slot-icon">🧍</span>
+              <span class="photo-slot-hint">Foto wählen</span>
+              <img id="preview-front-img" alt="Front">
+              <input type="file" accept="image/*" style="display:none;" onchange="previewPhoto(event,'front')">
+            </label>
+          </div>
+          <div>
+            <div class="photo-slot-label-text">Side</div>
+            <label id="label-side" class="photo-slot">
+              <span class="photo-slot-icon">🧍</span>
+              <span class="photo-slot-hint">Foto wählen</span>
+              <img id="preview-side-img" alt="Side">
+              <input type="file" accept="image/*" style="display:none;" onchange="previewPhoto(event,'side')">
+            </label>
+          </div>
+          <div>
+            <div class="photo-slot-label-text">Back</div>
+            <label id="label-back" class="photo-slot">
+              <span class="photo-slot-icon">🧍</span>
+              <span class="photo-slot-hint">Foto wählen</span>
+              <img id="preview-back-img" alt="Back">
+              <input type="file" accept="image/*" style="display:none;" onchange="previewPhoto(event,'back')">
+            </label>
+          </div>
+        </div>
+        <button class="save-btn" onclick="uploadPhotos()" id="upload-btn">Fotos speichern ✦</button>
+      </div>
+
+      <div class="photo-groups" id="photo-groups">
+        <div class="empty-state">Noch keine Fotos.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const SHEET_ID = '1zh9KttDuGQCIOAMQIBgT2pSnBgw54N2mL9BcQQHNq4s';
+const SHARED_PASSWORD = 'gameboys2025';
+const WEDDING_DATE = new Date('2028-06-10T14:00:00');
+const DRIVE_FOLDER = '1BLCpxau8TzcVzkxcB_6Vcgo2hjamTMJL';
+
+const USERS = ['Sebi','Clemens','Kopi','Loisi','Michi','Adea'];
+const GUEST_USER = 'Guest';
+const ALL_LOGIN_USERS = [...USERS, GUEST_USER];
+
+const USER_COLORS = {
+  Sebi:'#c9a84c', Clemens:'#7eb8f7', Kopi:'#f0a0c8',
+  Loisi:'#a0d4b0', Michi:'#b0a0f0', Adea:'#f0c0a0', Guest:'#5a5a6a'
+};
+
+const SA = {
+  email:"gameboystracker@gameboystracker.iam.gserviceaccount.com",
+  key:`-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDXE0diIYb1fYX0
+6jTwP0Jz044CZtNURzmVHTRtQe/3QnBA9+wdWxa66Xp6GxKV4Euf7z1u5S5P5oJP
+A95DtF9vLSbb85au1RYskQaRLJxvq7noEg/0liOEbUSAMuk8+tcOFap4eB4vVvDc
+UvCW2RV/3mdON2ldjcivTZ20SccCHRW/rJ1+QN5Jb/gwhZoXdlEXVznTrqsoRP4i
+i/OVvqONO/dRQve6jrulkGfcYDk4+/rfSrHGwKEh9/W4bnQFJtW36pPs22+Kit3O
+XtQHs2X6nouOg0TGVnMqg4SXE7PCr3UaubNzCh3Os1TVpM5mz+vnMjZL33atxZGR
++fTgJmbRAgMBAAECggEAKDzGHRjSq/j459ItZ0kegJbyuYZNQTY2EqytE0fDwkme
+wLjhZriU7xEhRdjsyDd3TouuvaGI4Y/pjyjVG2uSczVKUNootbrN9DaJuP1UoxvI
+ox9F9udj67GZoDZmJm9zboIlK3alhwvH8iBePIqOmCaewyZgwwz0n79worsuzTkV
+zsxJjmaAwZLmGC53X7UUKHmRBNo6CiEyjtbL0wHhULCPEkU0hNU4yGeLaJhpcxOf
+fFunIP+M5ptXP4gTIOb/cT8SdDfHsQF4Gf9VrL8yO+lY9ga9hopMmH8fajS5hYky
+bPO/56LruJTRqoiD1izA+Ytp8j59uGMmZkyMjxNFMQKBgQD6K5ZcIhvevcdblDED
+Ai1V5RG9rCehBcNS2HsLMtXoldAA0DO6aWK6HjhmBnsCliscc50Hru8nvjPko/4D
+2TQwXQ0o93UpVLZLNm6P8ysgBtK4IuiAc3vSgreJ8+C5UOBcjaCnI4m06QGP0CCa
+3BZxay1LWzzzsu2KDTgrpkLhBQKBgQDcFlRXumRdBSl23AAUlZ7Bftyz6f3IK4Ah
+bFJJn/ypyrjTA1cMKqe5K00nZPFNMjvSP5l2zNOrKZdjY2skVr9hWKQW+fJAGN4X
+YCPi3Wn1AFp0VB8mg0F0cANvo0JEf2g+5zV3ud0rKvXZ/2/QxNGsoU0mSSymNKPl
+/4HF+hCIXQKBgDdZlXblBQ2PJ6CXdRCZVrZ+bCJvCIWT5Ndblj2wDavcGZ1Uc113
+G6TaMtg/7s9vsjIlUkT062z7pDeeIQFw+R8KN3Ms7PssBvk1HdkzkAMR/2VGM/LX
+mjnFOh6Hmtzli/5uR3EzZ7BjLTlIby5UK5MEh4z4rs+scunsatUdgAaRAoGANGiE
+0RcrixMNmqYsxroSQdVpzNXtftsM+eiHd8zHJ8+ET4s+EUGfCvMKvlTFOTK7GAfZ
+DXcc+GdBC4PDIbYegJnRCT+fti+1wy87nGxJLPRWldjqSgt7bLS3vL/Nqe4E7uWz
+z7zMs9jZDn5LLBWSMF+AtZs7LKDgXoaHapNvmGkCgYEA+D8sR9KXWzkxxTEh36hm
+H5D8W7vYPjqNvwG0DWv8DPfW5mKmUbNa6JIinLCng1d4ia9iv2/s8Ec4oEQYLUxV
+DxKkc4/kgZj197u9+bb3eh8mENARIQmfi9NZbOSeASykqJoMX0lC02sTjUEGbC/E
+zxjF7WOWuSCzf+A+DvXqrNY=
+-----END PRIVATE KEY-----`
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let currentUser=null, selectedLoginUser=null, isGuest=false;
+let allData={}, allPhotos={}, charts={};
+let currentDataUser='Sebi', currentPhotoUser='Sebi', currentEntryUser=null;
+
+// ============================================================
+// COUNTDOWN
+// ============================================================
+function updateCountdown() {
+  const now = new Date();
+  const diff = WEDDING_DATE - now;
+  if (diff <= 0) {
+    ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id => document.getElementById(id).textContent = '0');
+    return;
+  }
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+  const secs = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-days').textContent = String(days).padStart(3,'0');
+  document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(mins).padStart(2,'0');
+  document.getElementById('cd-secs').textContent = String(secs).padStart(2,'0');
+}
+
+// ============================================================
+// BUILD LOGIN BUTTONS
+// ============================================================
+function buildLoginButtons() {
+  const container = document.getElementById('login-user-btns');
+  container.innerHTML = ALL_LOGIN_USERS.map(u => `
+    <button class="user-btn" onclick="selectUser('${u}',this)">
+      <span class="dot dot-${u.toLowerCase()}"></span> ${u}
+    </button>`).join('');
+}
+
+// ============================================================
+// JWT / AUTH
+// ============================================================
+async function getAccessToken() {
+  const now=Math.floor(Date.now()/1000);
+  const header={alg:'RS256',typ:'JWT'};
+  const claim={iss:SA.email,scope:'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive',aud:'https://oauth2.googleapis.com/token',exp:now+3600,iat:now};
+  const hB64=btoa(JSON.stringify(header)).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+  const cB64=btoa(JSON.stringify(claim)).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+  const signInput=`${hB64}.${cB64}`;
+  const sig=await signJWT(signInput,SA.key);
+  const jwt=`${signInput}.${sig}`;
+  const resp=await fetch('https://oauth2.googleapis.com/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:`grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`});
+  const data=await resp.json();
+  return data.access_token;
+}
+
+async function signJWT(input,pemKey) {
+  const sig=new KJUR.crypto.Signature({alg:'SHA256withRSA'});
+  sig.init(pemKey);sig.updateString(input);
+  const hexSig=sig.sign();
+  return btoa(String.fromCharCode(...new Uint8Array(hexToBin(hexSig)))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+}
+function hexToBin(hex){const buf=new ArrayBuffer(hex.length/2);const view=new Uint8Array(buf);for(let i=0;i<hex.length;i+=2)view[i/2]=parseInt(hex.substr(i,2),16);return buf;}
+
+let _token=null,_tokenExp=0;
+async function getToken(){
+  const now=Date.now()/1000;
+  if(_token&&now<_tokenExp-60)return _token;
+  _token=await getAccessToken();_tokenExp=now+3600;return _token;
+}
+
+// ============================================================
+// SHEETS API
+// ============================================================
+async function sheetsGet(range){
+  const token=await getToken();
+  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}`,{headers:{Authorization:`Bearer ${token}`}});
+  const d=await r.json();return d.values||[];
+}
+async function sheetsAppend(sheetName,row){
+  const token=await getToken();
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(sheetName+'!A1')}:append?valueInputOption=USER_ENTERED`,{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({values:[row]})});
+}
+
+// ============================================================
+// DRIVE UPLOAD
+// ============================================================
+async function uploadPhotoToDrive(dataUrl, filename) {
+  const token = await getToken();
+  const res = await fetch(dataUrl);
+  const blob = await res.blob();
+  const metadata = {name: filename, mimeType: blob.type, parents: [DRIVE_FOLDER]};
+  const form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(metadata)], {type:'application/json'}));
+  form.append('file', blob);
+  const uploadResp = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
+    method:'POST', headers:{Authorization:`Bearer ${token}`}, body:form
+  });
+  const uploadData = await uploadResp.json();
+  console.log('Drive upload response:', JSON.stringify(uploadData));
+  if (!uploadData.id) throw new Error('Drive upload fehlgeschlagen: ' + JSON.stringify(uploadData));
+  const fileId = uploadData.id;
+  await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions`, {
+    method:'POST', headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},
+    body:JSON.stringify({role:'reader',type:'anyone'})
+  });
+  return `https://drive.google.com/uc?export=view&id=${fileId}`;
+}
+
+// ============================================================
+// ENSURE SHEETS
+// ============================================================
+async function ensureSheets(){
+  const token=await getToken();
+  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}`,{headers:{Authorization:`Bearer ${token}`}});
+  const d=await r.json();
+  const existing=(d.sheets||[]).map(s=>s.properties.title);
+  const needed=[...USERS,'Photos'];
+  const toCreate=needed.filter(n=>!existing.includes(n));
+  if(!toCreate.length)return;
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`,{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({requests:toCreate.map(title=>({addSheet:{properties:{title}}}))})});
+  for(const user of USERS){
+    if(toCreate.includes(user)){
+      await sheetsAppend(user,['Datum','Gewicht','Kalorien','Protein','Bench','Deadlift','Curl','Hacksquat','LegExtension','TricepsPushdown','Kommentar']);
+    }
+  }
+  if(toCreate.includes('Photos')){await sheetsAppend('Photos',['User','Datum','Typ','DriveURL']);}
+}
+
+// ============================================================
+// LOAD DATA
+// ============================================================
+async function loadAllData(){
+  showLoading(true);
+  try{
+    await ensureSheets();
+    for(const user of USERS){
+      const rows=await sheetsGet(`${user}!A2:K1000`);
+      allData[user]=rows.filter(r=>r[0]).map(r=>({
+        date:r[0]||'', weight:parseFloat(r[1])||null, kcal:parseFloat(r[2])||null,
+        protein:parseFloat(r[3])||null, bench:parseFloat(r[4])||null, deadlift:parseFloat(r[5])||null,
+        curl:parseFloat(r[6])||null, hacksquat:parseFloat(r[7])||null,
+        legext: r.length>=11?(parseFloat(r[8])||null):null,
+        triceps: r.length>=11?(parseFloat(r[9])||null):null,
+        comment: r.length>=11?(r[10]||''):(r[8]||'')
+      }));
+    }
+    const photoRows=await sheetsGet('Photos!A2:D5000');
+    for(const user of USERS)allPhotos[user]=[];
+    for(const row of photoRows){
+      if(row[0]&&allPhotos[row[0]]){
+        allPhotos[row[0]].push({date:row[1],type:row[2],url:row[3]});
+      }
+    }
+  }catch(e){showToast('Fehler beim Laden: '+e.message,'error');}
+  showLoading(false);
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+function selectUser(name,btn){
+  selectedLoginUser=name;
+  document.querySelectorAll('.user-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function doLogin(){
+  const pw=document.getElementById('pw-input').value;
+  const err=document.getElementById('login-error');
+  if(!selectedLoginUser){err.style.display='block';err.textContent='Bitte erst einen User wählen.';return;}
+  if(pw!==SHARED_PASSWORD){err.style.display='block';err.textContent='Falsches Passwort.';return;}
+
+  currentUser=selectedLoginUser;
+  isGuest=(currentUser===GUEST_USER);
+  currentEntryUser=isGuest?'Sebi':currentUser;
+  currentDataUser=isGuest?'Sebi':currentUser;
+  currentPhotoUser=isGuest?'Sebi':currentUser;
+
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('topbar-name').textContent=currentUser;
+  const dot=document.getElementById('topbar-dot');
+  dot.style.background=USER_COLORS[currentUser]||'#5a5a6a';
+
+  // Guest UI adjustments
+  if(isGuest){
+    document.getElementById('guest-banner').style.display='block';
+    document.getElementById('tab-entry').style.display='none';
+    document.getElementById('upload-card').style.display='none';
+  }
+
+  buildUserSwitchers();
+  loadAllData().then(()=>{renderOverview();renderDataTable(currentDataUser);renderPhotos(currentPhotoUser);});
+}
+
+function logout(){
+  currentUser=null;selectedLoginUser=null;isGuest=false;
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('pw-input').value='';
+  document.getElementById('guest-banner').style.display='none';
+  document.getElementById('tab-entry').style.display='';
+  document.getElementById('upload-card').style.display='';
+  document.querySelectorAll('.user-btn').forEach(b=>b.classList.remove('selected'));
+}
+
+// ============================================================
+// UI
+// ============================================================
+function buildUserSwitchers(){
+  const switcherUsers = isGuest ? USERS : USERS;
+  ['entry-user-switcher','data-user-switcher'].forEach(id=>{
+    if(id==='entry-user-switcher' && isGuest){document.getElementById(id).innerHTML='';return;}
+    const active=id==='entry-user-switcher'?currentEntryUser:currentDataUser;
+    document.getElementById(id).innerHTML=switcherUsers.map(u=>{
+      const cls=u===active?`style="background:${USER_COLORS[u]}22;color:${USER_COLORS[u]};border-color:${USER_COLORS[u]}"`:'' ;
+      return `<button class="user-pill" onclick="switchEntryUser('${u}','${id}')" ${cls}>${u}</button>`;
+    }).join('');
+  });
+  document.getElementById('photo-user-tabs').innerHTML=USERS.map(u=>{
+    const active=u===currentPhotoUser;
+    const style=active?`style="background:${USER_COLORS[u]}22;color:${USER_COLORS[u]};border-color:${USER_COLORS[u]}"`:'' ;
+    return `<button class="user-pill" onclick="switchPhotoUser('${u}')" ${style}>${u}</button>`;
+  }).join('');
+}
+
+function switchEntryUser(user,switcherId){
+  if(switcherId==='entry-user-switcher')currentEntryUser=user;
+  else{currentDataUser=user;renderDataTable(user);}
+  buildUserSwitchers();
+}
+
+function switchPhotoUser(user){
+  currentPhotoUser=user;
+  buildUserSwitchers();
+  renderPhotos(user);
+}
+
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('page-'+tab).classList.add('active');
+  if(tab==='overview')renderOverview();
+  if(tab==='data')renderDataTable(currentDataUser);
+  if(tab==='photos')renderPhotos(currentPhotoUser);
+  if(tab==='entry')document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+}
+
+function showLoading(v){document.getElementById('loading').style.display=v?'flex':'none';}
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.className=`toast ${type} show`;
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// ============================================================
+// OVERVIEW
+// ============================================================
+function renderOverview(){renderAthleteCards();renderCharts();}
+
+function getLatest(user,field){const rows=(allData[user]||[]).filter(r=>r[field]!=null);return rows.length?rows[rows.length-1][field]:null;}
+
+function renderAthleteCards(){
+  document.getElementById('athlete-cards').innerHTML=USERS.map(user=>{
+    const w=getLatest(user,'weight'),dl=getLatest(user,'deadlift'),bench=getLatest(user,'bench');
+    const relDL=dl&&w?(dl/w).toFixed(2):'—',relBench=bench&&w?(bench/w).toFixed(2):'—';
+    const c=USER_COLORS[user];
+    return `<div class="athlete-card" style="--user-color:${c}">
+      <div class="athlete-name"><span class="dot" style="background:${c}"></span>${user}</div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-label">Gewicht</div><div class="stat-value">${w?w+' kg':'—'}</div></div>
+        <div class="stat-box"><div class="stat-label">Deadlift</div><div class="stat-value">${dl?dl+' kg':'—'}</div></div>
+        <div class="stat-box"><div class="stat-label">Bench</div><div class="stat-value">${bench?bench+' kg':'—'}</div></div>
+        <div class="stat-box"><div class="stat-label">Rel. DL / Bench</div><div class="stat-value" style="font-size:.8rem">${relDL}x / ${relBench}x</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function makeChart(id,field){
+  const ctx=document.getElementById(id);if(!ctx)return;if(charts[id])charts[id].destroy();
+  charts[id]=new Chart(ctx,{type:'line',data:{datasets:USERS.map(u=>{
+    const rows=(allData[u]||[]).filter(r=>r.date&&r[field]!=null);
+    return{label:u,data:rows.map(r=>({x:r.date,y:r[field]})),borderColor:USER_COLORS[u],backgroundColor:USER_COLORS[u]+'18',tension:.35,pointRadius:4,pointHoverRadius:6,borderWidth:2,fill:false};
+  })},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#5a5a6a',font:{family:'Inter',size:11},boxWidth:10,padding:16}}},
+    scales:{
+      x:{type:'category',ticks:{color:'#5a5a6a',maxTicksLimit:6,font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
+      y:{ticks:{color:'#5a5a6a',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}}
+    }
+  }});
+}
+
+function makeRelChart(){
+  const ctx=document.getElementById('chart-relstrength');if(!ctx)return;if(charts['chart-relstrength'])charts['chart-relstrength'].destroy();
+  const datasets=[];
+  for(const user of USERS){
+    const r1=(allData[user]||[]).filter(r=>r.date&&r.deadlift&&r.weight);
+    datasets.push({label:user+' DL',data:r1.map(r=>({x:r.date,y:+(r.deadlift/r.weight).toFixed(3)})),borderColor:USER_COLORS[user],borderDash:[],tension:.35,pointRadius:3,borderWidth:2,fill:false});
+    const r2=(allData[user]||[]).filter(r=>r.date&&r.bench&&r.weight);
+    datasets.push({label:user+' Bench',data:r2.map(r=>({x:r.date,y:+(r.bench/r.weight).toFixed(3)})),borderColor:USER_COLORS[user]+'88',borderDash:[5,3],tension:.35,pointRadius:3,borderWidth:1.5,fill:false});
+  }
+  charts['chart-relstrength']=new Chart(ctx,{type:'line',data:{datasets},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#5a5a6a',font:{family:'Inter',size:10},boxWidth:8,padding:12}}},
+    scales:{
+      x:{type:'category',ticks:{color:'#5a5a6a',maxTicksLimit:6,font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
+      y:{ticks:{color:'#5a5a6a',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}}
+    }
+  }});
+}
+
+function renderCharts(){
+  makeChart('chart-weight','weight');
+  makeChart('chart-deadlift','deadlift');
+  makeChart('chart-bench','bench');
+  makeChart('chart-legext','legext');
+  makeChart('chart-triceps','triceps');
+  makeRelChart();
+}
+
+// ============================================================
+// DATA ENTRY
+// ============================================================
+async function saveEntry(){
+  if(isGuest)return;
+  const btn=document.getElementById('save-btn');
+  btn.disabled=true;btn.textContent='Speichert...';
+  const user=currentEntryUser||currentUser;
+  const row=[
+    document.getElementById('f-date').value,
+    document.getElementById('f-weight').value,
+    document.getElementById('f-kcal').value,
+    document.getElementById('f-protein').value,
+    document.getElementById('f-bench').value,
+    document.getElementById('f-deadlift').value,
+    document.getElementById('f-curl').value,
+    document.getElementById('f-hacksquat').value,
+    document.getElementById('f-legext').value,
+    document.getElementById('f-triceps').value,
+    document.getElementById('f-comment').value
+  ];
+  if(!row[0]){showToast('Bitte Datum auswählen.','error');btn.disabled=false;btn.textContent='Eintrag speichern ✦';return;}
+  try{
+    await sheetsAppend(user,row);
+    allData[user].push({date:row[0],weight:parseFloat(row[1])||null,kcal:parseFloat(row[2])||null,protein:parseFloat(row[3])||null,bench:parseFloat(row[4])||null,deadlift:parseFloat(row[5])||null,curl:parseFloat(row[6])||null,hacksquat:parseFloat(row[7])||null,legext:parseFloat(row[8])||null,triceps:parseFloat(row[9])||null,comment:row[10]});
+    showToast(`✦ Eintrag für ${user} gespeichert!`);
+    ['f-weight','f-kcal','f-protein','f-bench','f-deadlift','f-curl','f-hacksquat','f-legext','f-triceps','f-comment'].forEach(id=>document.getElementById(id).value='');
+  }catch(e){showToast('Fehler: '+e.message,'error');}
+  btn.disabled=false;btn.textContent='Eintrag speichern ✦';
+}
+
+// ============================================================
+// DATA TABLE
+// ============================================================
+function renderDataTable(user){
+  const tbody=document.getElementById('data-tbody');
+  const rows=[...(allData[user]||[])].reverse();
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="13" style="text-align:center;color:var(--muted);padding:3rem;font-family:'Cormorant Garamond',serif;font-size:1.1rem">Noch keine Einträge.</td></tr>`;return;}
+  tbody.innerHTML=rows.map(r=>{
+    const relDL=r.deadlift&&r.weight?(r.deadlift/r.weight).toFixed(2):'—';
+    const relBench=r.bench&&r.weight?(r.bench/r.weight).toFixed(2):'—';
+    return `<tr>
+      <td class="td-date">${r.date}</td><td>${r.weight??'—'}</td><td>${r.kcal??'—'}</td><td>${r.protein??'—'}</td>
+      <td>${r.bench??'—'}</td><td>${relBench}</td><td>${r.deadlift??'—'}</td><td>${relDL}</td>
+      <td>${r.curl??'—'}</td><td>${r.hacksquat??'—'}</td><td>${r.legext??'—'}</td><td>${r.triceps??'—'}</td>
+      <td class="td-comment">${r.comment||''}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// PHOTOS
+// ============================================================
+const pendingPhotos={front:null,side:null,back:null};
+
+function previewPhoto(event,slot){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    pendingPhotos[slot]=e.target.result;
+    const img=document.getElementById(`preview-${slot}-img`);
+    img.src=e.target.result;img.style.display='block';
+    const label=document.getElementById(`label-${slot}`);
+    label.querySelector('.photo-slot-icon').style.display='none';
+    label.querySelector('.photo-slot-hint').style.display='none';
+    label.classList.add('has-photo');
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadPhotos(){
+  if(isGuest)return;
+  const slots=[{key:'front',type:'Front'},{key:'side',type:'Side'},{key:'back',type:'Back'}].filter(s=>pendingPhotos[s.key]);
+  if(!slots.length){showToast('Bitte mindestens ein Foto auswählen.','error');return;}
+  const btn=document.getElementById('upload-btn');btn.disabled=true;showLoading(true);
+  const date=new Date().toISOString().split('T')[0];
+  for(const slot of slots){
+    try{
+      showToast(`Lade ${slot.type} hoch...`);
+      const driveUrl=await uploadPhotoToDrive(pendingPhotos[slot.key],`${currentUser}_${date}_${slot.type}.jpg`);
+      await sheetsAppend('Photos',[currentUser,date,slot.type,driveUrl]);
+      if(!allPhotos[currentUser])allPhotos[currentUser]=[];
+      allPhotos[currentUser].push({date,type:slot.type,url:driveUrl});
+    }catch(e){showToast('Fehler: '+e.message,'error');}
+  }
+  for(const slot of ['front','side','back']){
+    pendingPhotos[slot]=null;
+    const img=document.getElementById(`preview-${slot}-img`);
+    img.style.display='none';img.src='';
+    const label=document.getElementById(`label-${slot}`);
+    label.querySelector('.photo-slot-icon').style.display='';
+    label.querySelector('.photo-slot-hint').style.display='';
+    label.classList.remove('has-photo');
+    const input=label.querySelector('input');if(input)input.value='';
+  }
+  showLoading(false);btn.disabled=false;
+  showToast(`✦ ${slots.length} Foto(s) gespeichert!`);
+  renderPhotos(currentPhotoUser);
+}
+
+function renderPhotos(user){
+  const container=document.getElementById('photo-groups');
+  const photos=allPhotos[user]||[];
+  if(!photos.length){container.innerHTML=`<div class="empty-state">Noch keine Fotos für ${user}.</div>`;return;}
+  const byDate={};
+  for(const p of photos){if(!byDate[p.date])byDate[p.date]=[];byDate[p.date].push(p);}
+  const dates=Object.keys(byDate).sort().reverse();
+  const c=USER_COLORS[user];
+  container.innerHTML=dates.map(date=>{
+    const group=byDate[date];
+    return `<div>
+      <div class="photo-group-header"><span class="dot" style="background:${c}"></span>${user} — ${date}</div>
+      <div class="photo-row">${['Front','Side','Back'].map(type=>{
+        const photo=group.find(p=>p.type===type);
+        return `<div class="photo-item">
+          ${photo?`<img src="${photo.url}" alt="${type}" loading="lazy"><div class="photo-label">${type}</div>`:`<div class="photo-empty">${type}</div>`}
+        </div>`;
+      }).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load',()=>{
+  buildLoginButtons();
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+  updateCountdown();
+  setInterval(updateCountdown,1000);
+});
+</script>
+</body>
+</html>
